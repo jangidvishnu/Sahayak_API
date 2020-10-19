@@ -39,6 +39,7 @@ app.use(jwt.authenticateToken);
 
 app.post('/auth/logout', [auth.logout]);
 app.post('/auth/logout_all', [auth.logout_all]);
+app.get('/user/getUserDetails', [user.getUserDetails]);
 
 //The 404 Route (ALWAYS Keep this as the last route)
 app.get('*', function(req, res) {

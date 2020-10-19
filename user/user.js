@@ -16,27 +16,17 @@ exports.setting = async(req, res) => {
     }
 };
 
-exports.dashboard = async(req, res) => {
+exports.getUserDetails = async(req, res) => {
     try {
         let user_id = req.user.user_id;
-        let announcement = await db.query("SELECT * FROM `announcement` WHERE `user_id` IS NULL AND `language` LIKE 'en' OR `user_id` = " + user_id + " AND `language` LIKE 'en' ORDER BY `id` DESC;");
-        let wallet = await db.query("SELECT * FROM `wallet` WHERE `user_id` = " + user_id);
-        if (wallet.length) {
-            let rates = await db.query("SELECT * FROM `coin` ");
-            let data = [];
-            let total_usd = 0;
-            rates.forEach(element => {
-                let amount_usd = wallet[0][element.coin] * element.rate;
-                let wallet_data = { name: element.name, symbol: element.symbol, logo: element.logo, coin: element.coin, coin_balance: wallet[0][element.coin], usd_balance: amount_usd, rate: element.rate, percentage: element.percent_change, };
-                data.push(wallet_data);
-                if (amount_usd > 0) total_usd += amount_usd;
-            });
-            res.status(200).send({ success: true, msg: '', data: { announcement: announcement, total_balance_usd: total_usd, wallet: data }, errors: '' });
+        let user = await db.query("SELECT `first_name`, `last_name`, `aadhar_number`, `can_edit_details`,  `email`, `mobile`, `join_time`, `update_time`, `address`, `city`, `state`, `zipcode` FROM `users` WHERE `id` = " + user_id);
+        if (user.length) {
+            res.status(200).send({ success: true, msg: '', data: { user: user[0] }, errors: '' });
         } else {
             res.status(200).send({ success: false, msg: 'User Not Found...', data: {} });
         }
     } catch (err) {
-        console.log('in dashboard function error');
+        console.log('in getUserDetails function error');
         console.log(err);
         res.status(500).send({ success: false, msg: 'Error', data: {}, errors: '' });
     }

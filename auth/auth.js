@@ -35,7 +35,21 @@ exports.login = async(req, res) => {
                     }
                     const accessToken = await jwt.generateToken(user_obj);
                     if (accessToken.success == true) {
-                        res.status(200).json({ success: true, msg: 'Successfully logged In!', data: user_obj, accessToken: accessToken.token, errors: '' })
+                        let user = {
+                            aadhar_number: userInfo[0].aadhar_number,
+                            address: userInfo[0].address,
+                            can_edit_details: userInfo[0].can_edit_details,
+                            city: userInfo[0].city,
+                            email: userInfo[0].email,
+                            first_name: userInfo[0].first_name,
+                            join_time: userInfo[0].join_time,
+                            last_name: userInfo[0].last_name,
+                            mobile: userInfo[0].mobile,
+                            state: userInfo[0].state,
+                            update_time: userInfo[0].update_time,
+                            zipcode: 0
+                        }
+                        res.status(200).json({ success: true, msg: 'Successfully logged In!', data: { user: user }, accessToken: accessToken.token, errors: '' })
                     } else {
                         res.status(200).json({ success: false, msg: 'Error in generating access Token!', data: "", errors: '' });
                     }
