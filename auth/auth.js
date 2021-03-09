@@ -6,7 +6,7 @@ const jwt = require('./jwt');
 const validation = require('./validation');
 const sha256 = require('sha256');
 
-exports.login = async(req, res) => {
+exports.login = async (req, res) => {
     try {
         let aadharNumber = req.body.aadharNumber;
         let otp = req.body.otp;
@@ -81,8 +81,31 @@ exports.login = async(req, res) => {
 };
 
 
+exports.adminLogin = async (req, res) => {
+    try {
+        let username = req.body.username;
+        let password = req.body.password;
+        if (username=='admin123@yahoo.com' && password=='adminPass') {
+            let user_obj ={ user :'admin' };
+            const accessToken = await jwt.generateAdminToken(user_obj);
+            if (accessToken.success == true) {
+                
+                res.status(200).json({ success: true, msg: 'Successfully logged In!', data: { }, accessToken: accessToken.token, errors: '' })
+            } else {
+                res.status(200).json({ success: false, msg: 'Error in generating access Token!', data: "", errors: '' });
+            }
+        } else {
+            res.status(200).json({ success: false, msg: 'Wrong credentials', data: "", errors: '' });
+        }
+    } catch (err) {
+        console.log('in adminLogin function error');
+        console.log(err);
+        res.status(500).send({ success: false, msg: 'Error', data: {}, errors: err });
+    }
+};
 
-exports.logout = async(req, res) => {
+
+exports.logout = async (req, res) => {
     try {
         const authHeader = req.headers['authorization']
         const token = authHeader && authHeader.split(' ')[1];
@@ -100,7 +123,7 @@ exports.logout = async(req, res) => {
     }
 };
 
-exports.logout_all = async(req, res) => {
+exports.logout_all = async (req, res) => {
     try {
         let user_id = req.user.user_id;
         let delete_token = await db.query("DELETE FROM `user_log` WHERE `user_log`.`user_id` = '" + user_id + "';");

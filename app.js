@@ -11,6 +11,7 @@ const app = express();
 const auth = require('./auth/auth');
 const jwt = require('./auth/jwt');
 const user = require('./user/user');
+const schemes = require('./schemes/schemes');
 
 
 //Here we are configuring express to use body-parser as middle-ware.
@@ -30,16 +31,25 @@ app.get('/', (req, res) => {
 });
 
 app.post('/auth/login', [auth.login]);
+app.post('/auth/admin_login', [auth.adminLogin]);
 
 
 
 app.use(jwt.authenticateToken);
 
+app.get('/schemes/',[schemes.getSchemes]);
+app.get('/user/getMembers',[user.getMembers]);
 
+app.post('/user/requestEdit',[user.requestEdit]);
 
 app.post('/auth/logout', [auth.logout]);
 app.post('/auth/logout_all', [auth.logout_all]);
 app.get('/user/getUserDetails', [user.getUserDetails]);
+
+app.use(jwt.authenticateAdmin);
+app.get('/admin/getRequests',[user.getRequests]);
+app.get('/admin/getSingleRequest',[user.getSingleRequest]);
+app.post('/admin/updateUser',[user.updateUser]);
 
 //The 404 Route (ALWAYS Keep this as the last route)
 app.get('*', function(req, res) {
