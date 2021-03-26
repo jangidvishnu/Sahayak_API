@@ -8,8 +8,8 @@ function send_mails(to_mail, subj, htmlBody) {
     let transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-            user: 'zarvis1287@gmail.com',
-            pass: 'rj14bd1287'
+            user: 'abc@gmail.com',
+            pass: 'abc'
         }
     });
 
